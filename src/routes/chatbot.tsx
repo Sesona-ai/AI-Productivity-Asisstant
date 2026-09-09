@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-// renders assistant text with basic markdown (bold, lists)
 import { useEffect, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
