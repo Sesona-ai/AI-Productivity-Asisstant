@@ -166,7 +166,7 @@ function ChatbotPage() {
                           : "bg-muted text-foreground",
                       )}
                     >
-                      {text}
+                      <MessageText text={text} />
                     </div>
                   </div>
                 );
