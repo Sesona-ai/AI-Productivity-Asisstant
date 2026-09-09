@@ -35,6 +35,43 @@ const SUGGESTIONS = [
   "Tips for saying no to extra work professionally",
 ];
 
+// Minimal markdown: **bold** and "- "/"1. " list items.
+function renderInline(text: string) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) =>
+    part.startsWith("**") && part.endsWith("**") ? (
+      <strong key={i}>{part.slice(2, -2)}</strong>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
+}
+
+function MessageText({ text }: { text: string }) {
+  const lines = text.split("\n");
+  return (
+    <>
+      {lines.map((line, i) => {
+        const trimmed = line.trim();
+        if (!trimmed) return <div key={i} className="h-2" />;
+        const bullet = /^[-•]\s+/.exec(trimmed);
+        const numbered = /^\d+[.)]\s+/.exec(trimmed);
+        if (bullet || numbered) {
+          const marker = bullet ? "•" : trimmed.match(/^\d+[.)]/)![0];
+          const content = trimmed.slice((bullet ?? numbered)![0].length);
+          return (
+            <div key={i} className="flex gap-2">
+              <span className="shrink-0">{marker}</span>
+              <span>{renderInline(content)}</span>
+            </div>
+          );
+        }
+        return <p key={i}>{renderInline(trimmed)}</p>;
+      })}
+    </>
+  );
+}
+
 function ChatbotPage() {
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
